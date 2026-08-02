@@ -23,7 +23,7 @@
 <body>
     <div class="container">
         <h2>二维码生成器</h2>
-        <input type="text" id="text-input" placeholder="输入网址或文本内容..." value="https://github.com">
+        <input type="text" id="text-input" placeholder="输入网址或文本内容..." value="">
         <button class="btn-generate" onclick="generateQR()">生成二维码</button>
         
         <div id="qrcode"></div>
@@ -32,6 +32,22 @@
     </div>
 
     <script>
+        // ==========================================
+        // 🔒 1. 验证拦截逻辑 (放在最前面)
+        // ==========================================
+        const AUTH_KEY = "sk124_auth_token";
+        const AUTH_PAGE_URL = "https://tks124.github.io/tks/";
+
+        window.onload = function() {
+            if (localStorage.getItem(AUTH_KEY) !== "true") {
+                window.location.replace(AUTH_PAGE_URL);
+            } else {
+                // 验证通过后，再执行页面原有的加载逻辑
+                generateQR();
+            }
+        };
+        // ==========================================
+
         let qrcodeInstance = null;
 
         // 生成二维码函数
@@ -84,9 +100,6 @@
             link.href = dataURL;
             link.click();
         }
-        
-        // 页面加载时默认生成一个
-        window.onload = generateQR;
     </script>
 </body>
 </html>
