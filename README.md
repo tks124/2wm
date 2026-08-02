@@ -1,1 +1,92 @@
-# 2wm
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>太空杀124二维码生成器</title>
+    <!-- 引入二维码生成库 -->
+    <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
+    <style>
+        body { font-family: sans-serif; display: flex; justify-content: center; align-items: center; min-height: 100vh; background: #f4f4f9; margin: 0;}
+        .container { background: white; padding: 30px; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); text-align: center; width: 350px;}
+        h2 { margin-top: 0; color: #333; }
+        input { width: 100%; padding: 10px; margin-bottom: 15px; border: 1px solid #ddd; border-radius: 5px; box-sizing: border-box; font-size: 16px;}
+        button { width: 100%; padding: 12px; border: none; border-radius: 5px; cursor: pointer; font-size: 16px; margin-bottom: 10px; transition: 0.3s;}
+        .btn-generate { background: #4CAF50; color: white; }
+        .btn-generate:hover { background: #45a049; }
+        .btn-download { background: #008CBA; color: white; display: none;}
+        .btn-download:hover { background: #007bb5; }
+        #qrcode { margin: 20px auto; display: flex; justify-content: center; }
+        #qrcode img, #qrcode canvas { border-radius: 5px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>二维码生成器</h2>
+        <input type="text" id="text-input" placeholder="输入网址或文本内容..." value="https://github.com">
+        <button class="btn-generate" onclick="generateQR()">生成二维码</button>
+        
+        <div id="qrcode"></div>
+        
+        <button id="download-btn" class="btn-download" onclick="downloadQR()">下载二维码图片</button>
+    </div>
+
+    <script>
+        let qrcodeInstance = null;
+
+        // 生成二维码函数
+        function generateQR() {
+            const text = document.getElementById('text-input').value.trim();
+            const qrContainer = document.getElementById('qrcode');
+            const downloadBtn = document.getElementById('download-btn');
+
+            if (!text) {
+                alert('请输入内容！');
+                return;
+            }
+
+            // 清空之前的二维码
+            qrContainer.innerHTML = ''; 
+
+            // 生成新的二维码
+            qrcodeInstance = new QRCode(qrContainer, {
+                text: text,
+                width: 200,
+                height: 200,
+                colorDark : "#000000",
+                colorLight : "#ffffff",
+                correctLevel : QRCode.CorrectLevel.H
+            });
+
+            // 显示下载按钮
+            downloadBtn.style.display = 'inline-block';
+        }
+
+        // 下载二维码图片函数
+        function downloadQR() {
+            const canvas = document.querySelector('#qrcode canvas');
+            const img = document.querySelector('#qrcode img');
+            let dataURL = '';
+
+            // 兼容不同库版本的渲染方式（canvas 或 img）
+            if (canvas) {
+                dataURL = canvas.toDataURL('image/png');
+            } else if (img) {
+                dataURL = img.src;
+            } else {
+                alert('请先生成二维码！');
+                return;
+            }
+
+            // 触发下载
+            const link = document.createElement('a');
+            link.download = 'qrcode.png';
+            link.href = dataURL;
+            link.click();
+        }
+        
+        // 页面加载时默认生成一个
+        window.onload = generateQR;
+    </script>
+</body>
+</html>
