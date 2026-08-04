@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>太空杀124二维码生成器</title>
-    <!-- 引入二维码生成库 -->
     <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
     <style>
         body { font-family: sans-serif; display: flex; justify-content: center; align-items: center; min-height: 100vh; background: #f4f4f9; margin: 0;}
@@ -32,9 +31,6 @@
     </div>
 
     <script>
-        // ==========================================
-        // 🔒 1. 验证拦截逻辑 (放在最前面)
-        // ==========================================
         const AUTH_KEY = "sk124_auth_token";
         const AUTH_PAGE_URL = "https://tks124.github.io/tks/";
 
@@ -42,15 +38,12 @@
             if (localStorage.getItem(AUTH_KEY) !== "true") {
                 window.location.replace(AUTH_PAGE_URL);
             } else {
-                // 验证通过后，再执行页面原有的加载逻辑
                 generateQR();
             }
         };
-        // ==========================================
 
         let qrcodeInstance = null;
 
-        // 生成二维码函数
         function generateQR() {
             const text = document.getElementById('text-input').value.trim();
             const qrContainer = document.getElementById('qrcode');
@@ -61,10 +54,8 @@
                 return;
             }
 
-            // 清空之前的二维码
             qrContainer.innerHTML = ''; 
 
-            // 生成新的二维码
             qrcodeInstance = new QRCode(qrContainer, {
                 text: text,
                 width: 200,
@@ -74,17 +65,14 @@
                 correctLevel : QRCode.CorrectLevel.H
             });
 
-            // 显示下载按钮
             downloadBtn.style.display = 'inline-block';
         }
 
-        // 下载二维码图片函数
         function downloadQR() {
             const canvas = document.querySelector('#qrcode canvas');
             const img = document.querySelector('#qrcode img');
             let dataURL = '';
 
-            // 兼容不同库版本的渲染方式（canvas 或 img）
             if (canvas) {
                 dataURL = canvas.toDataURL('image/png');
             } else if (img) {
@@ -94,7 +82,6 @@
                 return;
             }
 
-            // 触发下载
             const link = document.createElement('a');
             link.download = 'qrcode.png';
             link.href = dataURL;
